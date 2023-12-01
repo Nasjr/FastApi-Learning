@@ -35,3 +35,6 @@ def create_blog(blog : BlogModel, id:int = Path(lt=100),
         'content':content,
         'v':v
         }
+
+def required_functionality():
+    return {'message':'required_functionality function'}
