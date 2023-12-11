@@ -3,3 +3,10 @@ uvicorn
 sqlalchemy
 passlib
 bcrypt
+python-multipart
+python-jose
+aiofiles
+pytest
+requests
+httpx
+websockets

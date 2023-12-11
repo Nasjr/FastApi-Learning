@@ -1,3 +1,4 @@
+from fastapi import HTTPException,status
 from sqlalchemy.orm.session import Session
 from db.models import DbUser
 from db.hash import Hash
@@ -19,11 +20,22 @@ def get_all_users(db:Session):
 
 def get_user(id,db:Session):
     # handel exceptions
-    return db.query(DbUser).filter(DbUser.id == id).first()
+    user = db.query(DbUser).filter(DbUser.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {id} was not found')
+    return user
+def get_user_by_username(db:Session,username:str):
+    # handel exceptions
+    user = db.query(DbUser).filter(DbUser.username == username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {id} was not found')
+    return user
 
 def update_user(id:int , request:UserBase, db:Session):
     # handel exceptions
     user = db.query(DbUser).filter(DbUser.id == id)
+    if not user.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {id} was not found')
     user.update({
         DbUser.username : request.username,
         DbUser.email : request.email,
@@ -34,6 +46,8 @@ def update_user(id:int , request:UserBase, db:Session):
 
 def delete_user(id:int , db:Session):
     user = db.query(DbUser).filter(DbUser.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {id} was not found')
     db.delete(user)
     db.commit()
     # handel exceptions
